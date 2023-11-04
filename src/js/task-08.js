@@ -2,20 +2,31 @@ const loginForm = document.querySelector('.login-form');
 
 loginForm.addEventListener('submit', event => {
   event.preventDefault();
-  const {email, password} = readForm(event);
-  console.log(email.value, password.value);
-  formClear(event.currentTarget);
+  const formObject = readFormData(loginForm);
+  if (validateForm(formObject)) {
+    console.log(formObject);
+    loginForm.reset(); // Очищаємо значення полів форми
+  } else {
+    alert("Усі поля повинні бути заповнені");
+  }
 })
 
-function readForm(event) {
-  return event.currentTarget.elements;
+function readFormData(form) {
+  const formObject = {};
+  new FormData(form).forEach((value, key) => {
+    formObject[key] = value;
+  });
+  return formObject;
 }
 
-function formClear(form) {
-  for (const element of form.elements) {
-    if (["text","password","email","textarea"].includes(element.type)) {
-      element.value = "";
-      console.log(`Очищено обєкт: ${element.name}`);
+function validateForm(formObject) {
+  for (const key in formObject) {
+    console.log(key);
+    if (formObject[key] === "") {
+      return false;
     }
   }
+  return true;
 }
+
+
